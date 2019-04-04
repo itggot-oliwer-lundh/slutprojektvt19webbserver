@@ -58,7 +58,6 @@ post('/login') do
     end
 end
 
-
 get('/profile/:username') do
     slim(:profile, locals:{user:params["username"], inlagg: session[:inlagg]})
     

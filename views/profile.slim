@@ -1,0 +1,18 @@
+.wrapper
+    section class="articles"
+        article
+            .info
+                label = user["username"]
+                label inloggad
+                 
+                 
+        form action="/inlagg" method="post"
+            article
+                .info
+                    input type="text" placeholder="Inlägg" name="text"
+                    input type="submit" value="Puplicera"
+
+        - inlagg.each do |posdt|
+            article 
+                p #{posdt["text"]}
+

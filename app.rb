@@ -78,3 +78,19 @@ post('/inlagg') do
 
     redirect("/profile/#{session[:username]}")
 end
+
+get('/forum') do
+    slim(:inlagg, locals:{user:params["username"], inlagg: session[:inlagg]})
+end 
+
+post('/forum') do
+    db = SQLite3::Database.new("db/thampis.db")
+    db.results_as_hash = true
+    
+    db.execute("insert into något något", [session[:username], params["text"]])
+
+    session[:inlagg] = db.execute("select något något", [params["username"]])
+    inlagg = session[:inlagg]
+
+    redirect("/profile/#{session[:username]}")
+end

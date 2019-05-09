@@ -4,14 +4,17 @@ require 'sqlite3'
 require 'bcrypt'
 enable :sessions
 
+#Detta är det första som laddas in när man öppnar sidan. Den tar en till index hemsidan via slim. 
 get('/') do
     slim(:index)
 end
 
+#Detta är get routen när man sign upar ett nytt konto. 
 get('/sign_up') do
     slim(:sign_up)
 end 
 
+#Detta är post routen när man sign upar ett nytt konto. Här används även bcrypt för att kryptera lösenordet som användaren skriver in. Sedan sätts det krypterad lösenordet samt användarnament och ett unikt ID in i databasen för att seda redirecta till startsidan så man kan logga in med uppgifterna man nyss skrivit in. 
 post('/sign_up') do
     db = SQLite3::Database.new("db/thampis.db")
     db.results_as_hash = true
@@ -29,10 +32,12 @@ post('/sign_up') do
     redirect('/')
 end
 
+#Detta är get routen när man ska logga in
 get('/login') do
     slim(:login)
 end 
 
+#Detta är login routen när man ska logga in. Här jämförs det som man skrivit in i lösenordsfältet med det som finns i databasen. Om det är samma skickas man till sin profilsida där man kan skapa ett inlägg. Om de tinte är samma skickas man tillbaka till förstasidan. 
 post('/login') do
     db = SQLite3::Database.new("db/thampis.db")
     db.results_as_hash = true
@@ -58,15 +63,18 @@ post('/login') do
     end
 end
 
+#Detta är get routen när man skickas till profilsidan. Med den skickas även sessions och params så att man kan göra inlägg som är personliga. 
 get('/profile/:username') do
     slim(:profile, locals:{user:params["username"], inlagg: session[:inlagg]})
     
 end
 
+#Detta är ger routen när man har gjort ett inlägg. 
 get('/inlagg') do
     slim(:inlagg, locals:{user:params["username"], inlagg: session[:inlagg]})
 end 
 
+#Detta är post routen när man gör ett inlägg. Man lägger in texten som man skrivit in i databasen under användarnamnet. 
 post('/inlagg') do
     db = SQLite3::Database.new("db/thampis.db")
     db.results_as_hash = true
@@ -79,10 +87,12 @@ post('/inlagg') do
     redirect("/profile/#{session[:username]}")
 end
 
+#Detta är ger routen för forumet
 get('/forum') do
     slim(:forum, locals:{user:params["username"], forum: session[:forum]})
 end 
 
+#Detta är post routen för forumet som inte riktigt fungerar. 
 post('/forum') do
     db = SQLite3::Database.new("db/thampis.db")
     db.results_as_hash = true
